@@ -885,6 +885,13 @@ classdef epanet <handle
                 [Errcode] = ENopen(varargin{1}, varargin{2}, varargin{3}, obj.LibEPANET); 
             end
         end
+        function index = createProject(obj, varargin)
+            % Load epanet file when use bin functions.
+            % Example: 
+            %   d.createProject;
+            [obj.Errcode, index] = EN_createproject(0, obj.LibEPANET); 
+            error(obj.getError(obj.Errcode)); 
+        end
         function Errcode = runsCompleteSimulation(obj, varargin)
             % Runs a complete hydraulic and water simulation to create
             % binary & report files with name: [NETWORK_temp.txt], [NETWORK_temp.bin]
@@ -5093,6 +5100,16 @@ classdef epanet <handle
             files=dir('@#*');
             if ~isempty(files); delete('@#*'); end
             warning on; 
+        end
+        function createBinFile(obj, resbinfile)
+            obj.saveInputFile([resbinfile(1:end-4), '.inp']);
+            obj.Errcode = ENepanet(obj.LibEPANET, obj.TempInpFile, [obj.TempInpFile(1:end-4), '.txt'], resbinfile);
+        end
+        function value = readBinFile(obj, binfile)
+            fid = fopen(binfile, 'r');
+            value = readEpanetBin(fid, binfile, 0);  
+            value.StatusStr = obj.TYPEBINSTATUS(value.Status + 1);
+            fclose('all');
         end
         function value = getComputedTimeSeries_ENepanet(obj)
             obj.saveInputFile(obj.TempInpFile);
@@ -13835,6 +13852,10 @@ function [Errcode] = ENopen(inpname, repname, binname, LibEPANET) %DE
 end
 function [Errcode] = ENepanet(LibEPANET, tempfile, rptfile, binfile)            
 [Errcode] = calllib(LibEPANET, 'ENepanet', tempfile, rptfile, binfile, lib.pointer);
+end
+function [Errcode, index] = EN_createproject(ph, LibEPANET)    
+% Version 2.2
+[Errcode, index] = calllib(LibEPANET, 'EN_createproject', ph);
 end
 function [Errcode] = ENopenH(LibEPANET)
 [Errcode]=calllib(LibEPANET, 'ENopenH');
