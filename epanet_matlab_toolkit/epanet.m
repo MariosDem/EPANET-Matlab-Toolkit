@@ -675,7 +675,7 @@ classdef epanet <handle
         end
         function ENMatlabCleanup(obj, LibEPANET)
             % Unload library
-            if ~obj.ph.isNull
+            if obj.ph
                 [obj.Errcode, obj.ph] = calllib(obj.LibEPANET, 'EN_deleteproject', obj.ph);
                 obj.ph.isNull = 0; % Set it to 0 to pass the ph.isNull condition on api functions
                 % call and stop on error 'Error using calllib
@@ -732,9 +732,11 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENwriteline', line);
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENwriteline', line);
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_writeline', ph, line);
             end
         end
@@ -752,9 +754,11 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
-            if ph.isNull
-                Errcode = calllib(LibEPANET, 'ENaddpattern', patid);
-            else
+            try
+                if ~ph
+                    Errcode = calllib(LibEPANET, 'ENaddpattern', patid);
+                end
+            catch
                 Errcode = calllib(LibEPANET, 'EN_addpattern', ph, patid);
             end
         end
@@ -771,9 +775,11 @@ classdef epanet <handle
             % an error code.
             %
             % See also apiENopen.
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENclose');
-            else
+            try 
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENclose');
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_close', ph);
             end
         end
@@ -790,9 +796,11 @@ classdef epanet <handle
             % an error code.
             %
             % See also  apiENinitH, apiENrunH, apiENnextH.
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENcloseH');
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENcloseH');
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_closeH', ph);
             end
         end
@@ -811,9 +819,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value  the category's base demand.
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetbasedemand', index, numdemands, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetbasedemand', index, numdemands, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getbasedemand', ph, index, numdemands, 0);
             end
         end
@@ -879,9 +889,11 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENsetlinkid', index, newid);
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENsetlinkid', index, newid);
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_setlinkid', ph, index, newid);
             end
         end
@@ -899,9 +911,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value  the number of demand categories assigned to the node.
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetnumdemands', index, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetnumdemands', index, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getnumdemands', ph, index, 0);
             end
         end
@@ -921,9 +935,11 @@ classdef epanet <handle
             % value  the index of the category's time pattern.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetdemandpattern', index, numdemands, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetdemandpattern', index, numdemands, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getdemandpattern', ph, index, numdemands, 0);
             end
         end
@@ -940,9 +956,11 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENcloseQ');
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENcloseQ');
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_closeQ', ph);
             end
         end
@@ -961,7 +979,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % demandIndex  the index of the demand being sought.
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, demandIndex] = calllib(LibEPANET, 'ENgetdemandindex', nodeindex, demandName, 0);
             else
                 [Errcode, ~, ~, demandIndex] = calllib(LibEPANET, 'EN_getdemandindex', ph, nodeindex, demandName, 0);
@@ -982,7 +1000,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
-            if ph.isNull
+            if ~ph
                 [Errcode, value] = calllib(LibEPANET, 'ENgetstatistic', code, 0);
             else
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getstatistic', ph, code, 0);
@@ -1005,9 +1023,11 @@ classdef epanet <handle
             % setting the control setting applied to the link.
             % nindex  the index of the node used to trigger the control (0 for EN_TIMER and EN_TIMEOFDAY controls).
             % level   the action level (tank level, junction pressure, or time in seconds) that triggers the control.
-            if ph.isNull
-                [Errcode, ctype, lindex, setting, nindex, level] = calllib(LibEPANET, 'ENgetcontrol', cindex, 0, 0, 0, 0, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, ctype, lindex, setting, nindex, level] = calllib(LibEPANET, 'ENgetcontrol', cindex, 0, 0, 0, 0, 0);
+                end
+            catch
                 [Errcode, ~, ctype, lindex, setting, nindex, level] = calllib(LibEPANET, 'EN_getcontrol', ph, cindex, 0, 0, 0, 0, 0);
             end
         end
@@ -1023,9 +1043,11 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
-                [Errcode, count] = calllib(LibEPANET, 'ENgetcount', countcode, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, count] = calllib(LibEPANET, 'ENgetcount', countcode, 0);
+                end
+            catch
                 [Errcode, ~, count] = calllib(LibEPANET, 'EN_getcount', ph, countcode, 0);
             end
         end
@@ -1043,7 +1065,10 @@ classdef epanet <handle
             % errmsg the error message generated by the error code.
             % e      an error code.
             e=0; errmsg='';
-            if ph.isNull, errFunc = 'ENgeterror'; else, errFunc = 'EN_geterror';  end
+            try 
+                if ~ph, errFunc = 'ENgeterror'; else, errFunc = 'EN_geterror';  end
+            catch 
+            end
             if Errcode, [e, errmsg] = calllib(LibEPANET, errFunc, Errcode, char(32*ones(1, 79)), 79);
                 if e, [e, errmsg] = calllib(LibEPANET, errFunc, e, char(32*ones(1, 79)), 79); end
             end
@@ -1062,9 +1087,11 @@ classdef epanet <handle
             % flowunitsindex a flow units code (see EN_FlowUnits).
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___options.html
-            if ph.isNull
-                [Errcode, flowunitsindex]=calllib(LibEPANET, 'ENgetflowunits', 0);
-            else
+            try
+                if ~ph
+                    [Errcode, flowunitsindex]=calllib(LibEPANET, 'ENgetflowunits', 0);
+                end
+            catch
                 [Errcode, ~, flowunitsindex] = calllib(LibEPANET, 'EN_getflowunits', ph, 0);
             end
         end
@@ -1084,9 +1111,11 @@ classdef epanet <handle
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
             id=char(32*ones(1, 31));
-            if ph.isNull
-                [Errcode, id] = calllib(LibEPANET, 'ENgetlinkid', index, id);
-            else
+            try
+                if ~ph
+                    [Errcode, id] = calllib(LibEPANET, 'ENgetlinkid', index, id);
+                end
+            catch
                 [Errcode, ~, id] = calllib(LibEPANET, 'EN_getlinkid', ph, index, id);
             end
         end
@@ -1103,7 +1132,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % index   the link's index (starting from 1).
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, index] = calllib(LibEPANET, 'ENgetlinkindex', id, 0);
             else
                 [Errcode, ~, ~, index] = calllib(LibEPANET, 'EN_getlinkindex', ph, id, 0);
@@ -1123,9 +1152,11 @@ classdef epanet <handle
             % an error code.
             % from   the index of the link's start node (starting from 1).
             % to     the index of the link's end node (starting from 1).
-            if ph.isNull
-                [Errcode, from, to] = calllib(LibEPANET, 'ENgetlinknodes', index, 0, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, from, to] = calllib(LibEPANET, 'ENgetlinknodes', index, 0, 0);
+                end
+            catch
                 [Errcode, ~, from, to] = calllib(LibEPANET, 'EN_getlinknodes', ph, index, 0, 0);
             end
             from = double(from);
@@ -1145,7 +1176,9 @@ classdef epanet <handle
             % an error code.
             % typecode   the link's type (see LinkType).
             try 
+                if ~ph
                 [Errcode, typecode] = calllib(LibEPANET, 'ENgetlinktype', index, 0);
+                end
             catch
                 [Errcode, ~, typecode] = calllib(LibEPANET, 'EN_getlinktype', ph, index, 0);
             end
@@ -1168,9 +1201,11 @@ classdef epanet <handle
             % value   the current value of the property.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetlinkvalue', index, paramcode, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetlinkvalue', index, paramcode, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getlinkvalue', ph, index, paramcode, 0);
             end
             value = double(value);
@@ -1191,9 +1226,11 @@ classdef epanet <handle
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
             id=char(32*ones(1, 31));
-            if ph.isNull
-                [Errcode, id] = calllib(LibEPANET, 'ENgetnodeid', index, id);
-            else
+            try
+                if ~ph
+                    [Errcode, id] = calllib(LibEPANET, 'ENgetnodeid', index, id);
+                end
+            catch
                 [Errcode, ~, id] = calllib(LibEPANET, 'EN_getnodeid', ph, index, id);
             end
         end
@@ -1212,7 +1249,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetnodeid', index, newid);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setnodeid', ph, index, newid);
@@ -1231,7 +1268,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % index  the node's index (starting from 1).
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, index] = calllib(LibEPANET, 'ENgetnodeindex', id, 0);
             else
                 [Errcode, ~, ~, index] = calllib(LibEPANET, 'EN_getnodeindex', ph, id, 0);
@@ -1250,9 +1287,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % type the node's type (see NodeType).
-            if ph.isNull
-                [Errcode, type] = calllib(LibEPANET, 'ENgetnodetype', index, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, type] = calllib(LibEPANET, 'ENgetnodetype', index, 0);
+                end
+            catch
                 [Errcode, ~, type] = calllib(LibEPANET, 'EN_getnodetype', ph, index, 0);
             end
         end
@@ -1269,9 +1308,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value the current value of the option.
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetoption', optioncode, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetoption', optioncode, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getoption', ph, optioncode, 0);
             end
         end
@@ -1291,9 +1332,11 @@ classdef epanet <handle
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
             id=char(32*ones(1, 31));
-            if ph.isNull
-                [Errcode, id] = calllib(LibEPANET, 'ENgetpatternid', index, id);
-            else
+            try
+                if ~ph
+                    [Errcode, id] = calllib(LibEPANET, 'ENgetpatternid', index, id);
+                end
+            catch
                 [Errcode, ~, id] = calllib(LibEPANET, 'EN_getpatternid', ph, index, id);
             end
         end
@@ -1313,7 +1356,7 @@ classdef epanet <handle
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
             id=char(32*ones(1, 31));
-            if ph.isNull
+            if ~ph
                 [Errcode, id] = calllib(LibEPANET, 'ENgetcurveid', index, id);
             else
                 [Errcode, ~, id] = calllib(LibEPANET, 'EN_getcurveid', ph, index, id);
@@ -1334,7 +1377,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
-            if ph.isNull
+            if ~ph
                 [Errcode, ~] = calllib(LibEPANET, 'ENsetcurveid', index, id);
             else
                 [Errcode, ~] = calllib(LibEPANET, 'EN_setcurveid', ph, index, id);
@@ -1355,7 +1398,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
-            if ph.isNull
+            if ~ph
                 [Errcode, ~] = calllib(LibEPANET, 'ENsetpatternid', index, id);
             else
                 [Errcode, ~] = calllib(LibEPANET, 'EN_setpatternid', ph, index, id);
@@ -1375,7 +1418,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % type  The curve's type (see EN_CurveType).
-            if ph.isNull
+            if ~ph
                 [Errcode, type] = calllib(LibEPANET, 'ENgetcurvetype', index, 0);
             else
                 [Errcode, ~, type] = calllib(LibEPANET, 'EN_getcurvetype', ph, index, 0);
@@ -1394,7 +1437,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % index   the time pattern's index (starting from 1).
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, index] = calllib(LibEPANET, 'ENgetpatternindex', id, 0);
             else
                 [Errcode, ~, ~, index] = calllib(LibEPANET, 'EN_getpatternindex', ph, id, 0);
@@ -1413,9 +1456,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % len   the number of time periods in the pattern.
-            if ph.isNull
-                [Errcode, len] = calllib(LibEPANET, 'ENgetpatternlen', index, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, len] = calllib(LibEPANET, 'ENgetpatternlen', index, 0);
+                end
+            catch
                 [Errcode, ~, len] = calllib(LibEPANET, 'EN_getpatternlen', ph, index, 0);
             end
         end
@@ -1433,9 +1478,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value   the pattern factor for the given time period.
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetpatternvalue', index, period, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetpatternvalue', index, period, 0);
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getpatternvalue', ph, index, period, 0);
             end
         end
@@ -1452,9 +1499,11 @@ classdef epanet <handle
             % an error code.
             % qualcode    type of analysis to run (see obj.QualityType).
             % tracenode   index of the node being traced (if applicable).
-            if ph.isNull
-                [Errcode, qualcode, tracenode] = calllib(LibEPANET, 'ENgetqualtype', 0, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, qualcode, tracenode] = calllib(LibEPANET, 'ENgetqualtype', 0, 0);
+                end
+            catch
                 [Errcode, ~, qualcode, tracenode] = calllib(LibEPANET, 'EN_getqualtype', ph, 0, 0);
             end
         end
@@ -1471,9 +1520,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % timevalue the current value of the time parameter (in seconds).
-            if ph.isNull
-                [Errcode, timevalue] = calllib(LibEPANET, 'ENgettimeparam', paramcode, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, timevalue] = calllib(LibEPANET, 'ENgettimeparam', paramcode, 0);
+                end
+            catch
                 [Errcode, ~, timevalue] = calllib(LibEPANET, 'EN_gettimeparam', ph, paramcode, 0);
             end
         end
@@ -1489,9 +1540,11 @@ classdef epanet <handle
             % Returns:
             % LibEPANET the version of the OWA-EPANET toolkit.
             % an error code.
-            if ph.isNull
-                [Errcode, LibEPANET] = calllib(LibEPANET, 'ENgetversion', 0);
-            else
+            try
+                if ~ph
+                    [Errcode, LibEPANET] = calllib(LibEPANET, 'ENgetversion', 0);
+                end
+            catch
                 [Errcode, LibEPANET] = calllib(LibEPANET, 'EN_getversion', 0);
             end
         end
@@ -1509,7 +1562,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENinit', '', '', unitsType, headLossType);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_init', ph, '', '', unitsType, headLossType);
@@ -1531,9 +1584,11 @@ classdef epanet <handle
             % See also  apiENinitH, apiENrunH, apiENnextH, apiENreport,
             %           apiENsavehydfile.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENinitH', flag);
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENinitH', flag);
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_initH', ph, flag);
             end
         end
@@ -1553,7 +1608,7 @@ classdef epanet <handle
             %
             % See also  apiENinitQ, apiENrunQ, apiENnextQ.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENinitQ', saveflag);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_initQ', ph, saveflag);
@@ -1575,9 +1630,11 @@ classdef epanet <handle
             %
             % See also  apiENrunH.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
-                [Errcode, tstep] = calllib(LibEPANET, 'ENnextH', int32(0));
-            else
+            try
+                if ~ph
+                    [Errcode, tstep] = calllib(LibEPANET, 'ENnextH', int32(0));
+                end
+            catch
                 [Errcode, ~, tstep] = calllib(LibEPANET, 'EN_nextH', ph, int32(0));
             end
             tstep = double(tstep);
@@ -1598,7 +1655,7 @@ classdef epanet <handle
             %
             % See also  apiENstepQ, apiENrunQ.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
-            if ph.isNull
+            if ~ph
                 [Errcode, tstep] = calllib(LibEPANET, 'ENnextQ', int32(0));
             else
                 [Errcode, ~, tstep] = calllib(LibEPANET, 'EN_nextQ', ph, int32(0));
@@ -1621,9 +1678,11 @@ classdef epanet <handle
             % an error code.
             %
             % See also apiENclose
-            if ph.isNull
-                Errcode = calllib(LibEPANET, 'ENopen', inpname, repname, binname);
-            else
+            try 
+                if ~ph
+                    Errcode = calllib(LibEPANET, 'ENopen', inpname, repname, binname);
+                end
+            catch
                 Errcode = calllib(LibEPANET, 'EN_open', ph, inpname, repname, binname);
             end
             if Errcode && Errcode~=200
@@ -1661,9 +1720,11 @@ classdef epanet <handle
             %
             % See also  apiENinitH, apiENrunH, apiENnextH, apiENcloseH.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
-                [Errcode] = calllib(LibEPANET, 'ENopenH');
-            else
+            try
+                if ~ph
+                    [Errcode] = calllib(LibEPANET, 'ENopenH');
+                end
+            catch
                 [Errcode] = calllib(LibEPANET, 'EN_openH', ph);
             end
         end
@@ -1682,7 +1743,7 @@ classdef epanet <handle
             % See also  apiENopenQ, apiENinitQ, apiENrunQ, apiENnextQ,
             %           apiENstepQ, apiENcloseQ
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENopenQ');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_openQ', ph);
@@ -1701,7 +1762,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENreport');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_report', ph);
@@ -1719,7 +1780,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENcopyreport', filename);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_copyreport', ph, filename);
@@ -1736,7 +1797,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENclearreport');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_clearreport', ph);
@@ -1759,7 +1820,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
-            if ph.isNull
+            if ~ph
                 [Errcode, value] = calllib(LibEPANET, 'ENgetresultindex', objecttype, index, int32(0));
             else
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getresultindex', ph, objecttype, index, int32(0));
@@ -1778,7 +1839,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENresetreport');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_resetreport', ph);
@@ -1799,9 +1860,11 @@ classdef epanet <handle
             %
             % See also  apiENinitH, apiENrunH, apiENnextH, apiENcloseH.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
-                [Errcode, t] = calllib(LibEPANET, 'ENrunH', int32(0));
-            else
+            try
+                if ~ph
+                    [Errcode, t] = calllib(LibEPANET, 'ENrunH', int32(0));
+                end
+            catch
                 [Errcode, ~, t] = calllib(LibEPANET, 'EN_runH', ph, int32(0));
             end
             t = double(t);
@@ -1824,7 +1887,7 @@ classdef epanet <handle
             %           apiENnextQ, apiENstepQ.
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___quality.html
             t=int32(0);
-            if ph.isNull
+            if ~ph
                 [Errcode, t] = calllib(LibEPANET, 'ENrunQ', t);
             else
                 [Errcode, ~, t] = calllib(LibEPANET, 'EN_runQ', ph, t);
@@ -1843,7 +1906,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsaveH');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_saveH', ph);
@@ -1861,7 +1924,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsavehydfile', fname);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_savehydfile', ph, fname);
@@ -1879,7 +1942,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 Errcode = calllib(LibEPANET, 'ENsaveinpfile', inpname);
             else
                 Errcode = calllib(LibEPANET, 'EN_saveinpfile', ph, inpname);
@@ -1902,7 +1965,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetcontrol', cindex, ctype, lindex, setting, nindex, level);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setcontrol', ph, cindex, ctype, lindex, setting, nindex, level);
@@ -1922,7 +1985,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
-            if ph.isNull
+            if ~ph
                 [Errcode, ~] = calllib(LibEPANET, 'ENaddrule', rule);
             else
                 [Errcode, ~] = calllib(LibEPANET, 'EN_addrule', ph, rule);
@@ -1941,7 +2004,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeleterule', index);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deleterule', ph, index);
@@ -1968,7 +2031,7 @@ classdef epanet <handle
             % relop       the premise's comparison operator (see RULEOPERATOR).
             % status      the status that the object's status is compared to (see RULESTATUS).
             % value       the value that the object's variable is compared to.
-            if ph.isNull
+            if ~ph
                 [Errcode, logop, object, objIndex, variable, relop, status, value] = calllib( ...
                     LibEPANET, 'ENgetpremise', ruleIndex, premiseIndex, 0, 0, 0, 0, 0, 0, 0);
             else
@@ -1992,7 +2055,7 @@ classdef epanet <handle
             % linkIndex   the index of the link in the action (starting from 1).
             % status      the status assigned to the link (see RULESTATUS).
             % setting     the value assigned to the link's setting.
-            if ph.isNull
+            if ~ph
                 [Errcode, linkIndex, status, setting] = calllib( ...
                     LibEPANET, 'ENgetthenaction', ruleIndex, actionIndex, 0, 0, 0);
             else
@@ -2016,7 +2079,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetthenaction', ruleIndex, actionIndex, linkIndex, status, setting);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setthenaction', ph, ruleIndex, actionIndex, linkIndex, status, setting);
@@ -2039,7 +2102,7 @@ classdef epanet <handle
             % linkIndex  the index of the link in the action.
             % status     the status assigned to the link (see RULESTATUS).
             % setting    the value assigned to the link's setting.
-            if ph.isNull
+            if ~ph
                 [Errcode, linkIndex, status, setting] = calllib( ...
                     LibEPANET, 'ENgetelseaction', ruleIndex, actionIndex, 0, 0, 0);
             else
@@ -2063,7 +2126,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetelseaction', ruleIndex, actionIndex, linkIndex, status, setting);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setelseaction', ph, ruleIndex, actionIndex, linkIndex, status, setting);
@@ -2082,7 +2145,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetrulepriority', ruleIndex, priority);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setrulepriority', ph, ruleIndex, priority);
@@ -2112,7 +2175,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpremise', ruleIndex, premiseIndex, logop, ...
                     object, objIndex, variable, relop, status, value);
             else
@@ -2135,7 +2198,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpremiseindex', ruleIndex, premiseIndex, objIndex);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setpremiseindex', ph, ruleIndex, premiseIndex, objIndex);
@@ -2176,7 +2239,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpremisevalue', ruleIndex, premiseIndex, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setpremisevalue', ph, ruleIndex, premiseIndex, value);
@@ -2197,7 +2260,7 @@ classdef epanet <handle
             % id  the rule's ID name.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___rules.html
-            if ph.isNull
+            if ~ph
                 [Errcode, id] = calllib(LibEPANET, 'ENgetruleID', index, '');
             else
                 [Errcode, ~, id] = calllib(LibEPANET, 'EN_getruleID', ph, index, '');
@@ -2219,7 +2282,7 @@ classdef epanet <handle
             % nThenActions    number of actions in the rule's THEN section.
             % nElseActions    number of actions in the rule's ELSE section.
             % priority        the rule's priority value.
-            if ph.isNull
+            if ~ph
                 [Errcode, nPremises, nThenActions, nElseActions, priority] = ...
                     calllib(LibEPANET, 'ENgetrule', index, 0, 0, 0, 0);
             else
@@ -2241,7 +2304,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetlinknodes', index, startnode, endnode);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setlinknodes', ph, index, startnode, endnode);
@@ -2263,7 +2326,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetlinkvalue', index, paramcode, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setlinkvalue', ph, index, paramcode, value);
@@ -2287,7 +2350,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpipedata', index, length, diam, rough, mloss);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setpipedata', ph, index, length, diam, rough, mloss);
@@ -2309,7 +2372,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
+            if ~ph
                 [Errcode, index] = calllib(LibEPANET, 'ENsetlinktype', indexLink, paramcode, actionCode);
             else
                 [Errcode, ~, index] = calllib(LibEPANET, 'EN_setlinktype', ph, indexLink, paramcode, actionCode);
@@ -2331,7 +2394,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetnodevalue', index, paramcode, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setnodevalue', ph, index, paramcode, value);
@@ -2359,7 +2422,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsettankdata', index, elev, initlvl, minlvl, maxlvl, diam, minvol, volcurve);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_settankdata', ph, index, elev, initlvl, minlvl, maxlvl, diam, minvol, volcurve);
@@ -2378,7 +2441,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetoption', optioncode, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setoption', ph, optioncode, value);
@@ -2400,7 +2463,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___patterns.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpattern', index, factors, nfactors);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setpattern', ph, index, factors, nfactors);
@@ -2420,7 +2483,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetpatternvalue', index, period, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setpatternvalue', ph, index, period, value);
@@ -2443,7 +2506,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___options.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetqualtype', qualcode, chemname, chemunits, tracenode);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setqualtype', ph, qualcode, chemname, chemunits, tracenode);
@@ -2463,7 +2526,7 @@ classdef epanet <handle
             % an error code.
             %
             % See also apiENreport
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetreport', command);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setreport', ph, command);
@@ -2483,7 +2546,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___reporting.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetstatusreport', statuslevel);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setstatusreport', ph, statuslevel);
@@ -2504,7 +2567,7 @@ classdef epanet <handle
             % an error code.
             paramcode=int32(paramcode);
             timevalue=int32(timevalue);
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsettimeparam', paramcode, timevalue);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_settimeparam', ph, paramcode, timevalue);
@@ -2525,7 +2588,7 @@ classdef epanet <handle
             %
             % See also apiENopenH, apiENinitH, apiENrunH, apiENnextH, apiENcloseH
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsolveH');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_solveH', ph);
@@ -2546,7 +2609,7 @@ classdef epanet <handle
             %
             % See also apiENopenQ, apiENinitQ, apiENrunQ, apiENnextQ, apiENcloseQ
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsolveQ');
             else
                 [Errcode] = calllib(LibEPANET, 'EN_solveQ', ph);
@@ -2568,7 +2631,7 @@ classdef epanet <handle
             % See also apiENrunQ, apiENnextQ
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
             tleft=int32(0);
-            if ph.isNull
+            if ~ph
                 [Errcode, tleft]=calllib(LibEPANET, 'ENstepQ', tleft);
             else
                 [Errcode, ~, tleft] = calllib(LibEPANET, 'EN_stepQ', ph, tleft);
@@ -2589,7 +2652,7 @@ classdef epanet <handle
             % an error code
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___hydraulics.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENusehydfile', hydfname);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_usehydfile', ph, hydfname);
@@ -2613,7 +2676,7 @@ classdef epanet <handle
             %
             % See also apiENsetcurvevalue
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetcurve', index, x, y, nfactors);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setcurve', ph, index, x, y, nfactors);
@@ -2634,7 +2697,7 @@ classdef epanet <handle
             % an error code.
             % x  the point's x-value.
             % y  the point's y-value.
-            if ph.isNull
+            if ~ph
                 [Errcode, x, y] = calllib(LibEPANET, 'ENgetcurvevalue', index, period, 0, 0);
             else
                 [Errcode, ~, x, y] = calllib(LibEPANET, 'EN_getcurvevalue', ph, index, period, 0, 0);
@@ -2655,7 +2718,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetcurvevalue', index, pnt, x, y);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setcurvevalue', ph, index, pnt, x, y);
@@ -2674,7 +2737,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % index   The curve's index (starting from 1).
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, index]=calllib(LibEPANET, 'ENgetcurveindex', id, 0);
             else
                 [Errcode, ~, ~, index]=calllib(LibEPANET, 'EN_getcurveindex', ph, id, 0);
@@ -2694,7 +2757,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___curves.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENaddcurve', cid);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_addcurve', ph, cid);
@@ -2716,7 +2779,7 @@ classdef epanet <handle
             % nPoints	 the number of data points on the curve.
             % xValues	 the curve's x-values.
             % yValues	 the curve's y-values.
-            if ph.isNull
+            if ~ph
                 [Errcode, ids, nvalue, xvalue, yvalue] = calllib(LibEPANET, 'ENgetcurve', value, char(32*ones(1, 31)), ...
                     0, zeros(1, obj.getCurveLengths(value))', zeros(1, obj.getCurveLengths(value))');
             else
@@ -2737,7 +2800,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % len  The number of data points assigned to the curve.
-            if ph.isNull
+            if ~ph
                 [Errcode, len] = calllib(LibEPANET, 'ENgetcurvelen', index, 0);
             else
                 [Errcode, ~, len] = calllib(LibEPANET, 'EN_getcurvelen', ph, index, 0);
@@ -2757,7 +2820,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value   the index of the curve assigned to the pump's head curve.
-            if ph.isNull
+            if ~ph
                 [Errcode, value] = calllib(LibEPANET, 'ENgetheadcurveindex', pumpindex, 0);
             else
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getheadcurveindex', ph, pumpindex, 0);
@@ -2776,7 +2839,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value   the type of head curve used by the pump (see EN_PumpType).
-            if ph.isNull
+            if ~ph
                 [Errcode, value] = calllib(LibEPANET, 'ENgetpumptype', pumpindex, 0);
             else
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getpumptype', ph, pumpindex, 0);
@@ -2795,7 +2858,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % value The average of all of the time pattern's factors.
-            if ph.isNull
+            if ~ph
                 [Errcode, value] = calllib(LibEPANET, 'ENgetaveragepatternvalue', index, 0);
             else
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getaveragepatternvalue', ph, index, 0);
@@ -2815,9 +2878,11 @@ classdef epanet <handle
             % an error code.
             % x   the node's X-coordinate value.
             % y   the node's Y-coordinate value.
-            if ph.isNull
-                [Errcode, x, y] = calllib(LibEPANET, 'ENgetcoord', index, 0, 0);
-            else
+            try 
+                if ~ph
+                    [Errcode, x, y] = calllib(LibEPANET, 'ENgetcoord', index, 0, 0);
+                end
+            catch
                 [Errcode, ~, x, y] = calllib(LibEPANET, 'EN_getcoord', ph, index, 0, 0);
             end
         end
@@ -2835,7 +2900,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetcoord', index, x, y);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setcoord', ph, index, x, y);
@@ -2856,7 +2921,7 @@ classdef epanet <handle
             % an error code.
             % x  the vertex's X-coordinate value.
             % y  the vertex's Y-coordinate value.
-            if ph.isNull
+            if ~ph
                 [Errcode, x, y] = calllib(LibEPANET, 'ENgetvertex', index, vertex, 0, 0);
             else
                 [Errcode, ~, x, y] = calllib(LibEPANET, 'EN_getvertex', ph, index, vertex, 0, 0);
@@ -2877,7 +2942,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetvertices', index, x, y, vertex);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setvertices', ph, index, x, y, vertex);
@@ -2896,9 +2961,11 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % count  the number of vertex points that describe the link's shape.
-            if ph.isNull
-                [Errcode, count] = calllib(LibEPANET, 'ENgetvertexcount', index, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, count] = calllib(LibEPANET, 'ENgetvertexcount', index, 0);
+                end
+            catch
                 [Errcode, ~, count] = calllib(LibEPANET, 'EN_getvertexcount', ph, index, 0);
             end
         end
@@ -2920,7 +2987,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
+            if ~ph
                 Errcode = calllib(LibEPANET, 'ENadddemand', nodeIndex, baseDemand, demandPattern, demandName);
             else
                 Errcode = calllib(LibEPANET, 'EN_adddemand', ph, nodeIndex, baseDemand, demandPattern, demandName);
@@ -2939,7 +3006,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletedemand', nodeIndex, demandIndex);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletedemand', ph, nodeIndex, demandIndex);
@@ -2959,7 +3026,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetbasedemand', index, demandIdx, value);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setbasedemand', ph, index, demandIdx, value);
@@ -2981,7 +3048,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetdemandpattern', index, demandIdx, patInd);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setdemandpattern', ph, index, demandIdx, patInd);
@@ -3003,9 +3070,11 @@ classdef epanet <handle
             % chemunits   concentration units of the constituent.
             % tracenode 	index of the node being traced (if applicable).
             chm=char(32*ones(1, 31));
-            if ph.isNull
-                [Errcode, qualcode, chemname, chemunits, tracenode] = calllib(LibEPANET, 'ENgetqualinfo', 0, chm, chm, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, qualcode, chemname, chemunits, tracenode] = calllib(LibEPANET, 'ENgetqualinfo', 0, chm, chm, 0);
+                end
+            catch
                 [Errcode, ~, qualcode, chemname, chemunits, tracenode] = calllib(LibEPANET, 'EN_getqualinfo', ph, 0, chm, chm, 0);
             end
         end
@@ -3025,7 +3094,7 @@ classdef epanet <handle
             % index    the index of the newly added node.
             %
             % See also EN_NodeProperty, NodeType
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, index] = calllib(LibEPANET, 'ENaddnode', nodeid, nodetype, 0);
             else
                 [Errcode, ~, ~, index] = calllib(LibEPANET, 'EN_addnode', ph, nodeid, nodetype, 0);
@@ -3049,7 +3118,7 @@ classdef epanet <handle
             % index the index of the newly added link.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
+            if ~ph
                 [Errcode, ~, ~, ~, index] = calllib(LibEPANET, 'ENaddlink', linkid, linktype, fromnode, tonode, 0);
             else
                 [Errcode, ~, ~, ~, ~, index] = calllib(LibEPANET, 'EN_addlink', ph, linkid, linktype, fromnode, tonode, 0);
@@ -3071,7 +3140,7 @@ classdef epanet <handle
             % See also EN_NodeProperty, NodeType
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletenode', indexNode, condition);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletenode', ph, indexNode, condition);
@@ -3092,7 +3161,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___links.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletelink', indexLink, condition);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletelink', ph, indexLink, condition);
@@ -3111,7 +3180,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetheadcurveindex', pumpindex, curveindex);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setheadcurveindex', ph, pumpindex, curveindex);
@@ -3134,7 +3203,7 @@ classdef epanet <handle
             % Returns:
             % an error code.
             % cindex 	index of the new control.
-            if ph.isNull
+            if ~ph
                 [Errcode, cindex] = calllib(LibEPANET, 'ENaddcontrol', ctype, lindex, setting, nindex, level, 0);
             else
                 [Errcode, ~, cindex] = calllib(LibEPANET, 'EN_addcontrol', ph, ctype, lindex, setting, nindex, level, 0);
@@ -3152,7 +3221,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletecontrol', index);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletecontrol', ph, index);
@@ -3176,9 +3245,11 @@ classdef epanet <handle
             % pexp  Pressure exponent in demand function.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
-                [Errcode, type, pmin, preq, pexp] = calllib(LibEPANET, 'ENgetdemandmodel', 0, 0, 0, 0);
-            else
+            try
+                if ~ph
+                    [Errcode, type, pmin, preq, pexp] = calllib(LibEPANET, 'ENgetdemandmodel', 0, 0, 0, 0);
+                end
+            catch
                 [Errcode, ~, type, pmin, preq, pexp] = calllib(LibEPANET, 'EN_getdemandmodel', ph, 0, 0, 0, 0);
             end
         end
@@ -3199,7 +3270,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetdemandmodel', type, pmin, preq, pexp);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setdemandmodel', ph, type, pmin, preq, pexp);
@@ -3221,7 +3292,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetdemandname', node_index, demand_index, demand_name);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setdemandname', ph, node_index, demand_index, demand_name);
@@ -3244,7 +3315,7 @@ classdef epanet <handle
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___demands.html
             demand_name = char(32*ones(1, 31));
-            if ph.isNull
+            if ~ph
                 [Errcode, demand_name] = calllib(LibEPANET, 'ENgetdemandname', node_index, demand_index, demand_name);
             else
                 [Errcode, ~, demand_name] = calllib(LibEPANET, 'EN_getdemandname', ph, node_index, demand_index, demand_name);
@@ -3265,7 +3336,7 @@ classdef epanet <handle
             % line2 second title line.
             % line3 third title line.
             c = char(32*ones(1, 79));
-            if ph.isNull
+            if ~ph
                 [Errcode, line1, line2, line3] = calllib(LibEPANET, 'ENgettitle', c, c, c);
             else
                 [Errcode, ~, line1, line2, line3] = calllib(LibEPANET, 'EN_gettitle', ph, c, c, c);
@@ -3285,7 +3356,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsettitle', line1, line2, line3);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_settitle', ph, line1, line2, line3);
@@ -3306,7 +3377,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetcomment', object, index, comment);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setcomment', ph, object, index, comment);
@@ -3328,7 +3399,7 @@ classdef epanet <handle
             % an error code.
             % comment  comment to be added.
             comment = char(32*ones(1, 79));
-            if ph.isNull
+            if ~ph
                 [Errcode, comment] = calllib(LibEPANET, 'ENgetcomment', object, index, comment);
             else
                 [Errcode, ~, comment] = calllib(LibEPANET, 'EN_getcomment', ph, object, index, comment);
@@ -3346,7 +3417,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletepattern', indexPat);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletepattern', ph, indexPat);
@@ -3364,7 +3435,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENdeletecurve', indexCurve);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_deletecurve', ph, indexCurve);
@@ -3387,7 +3458,7 @@ classdef epanet <handle
             % an error code.
             %
             % OWA-EPANET Toolkit: http://wateranalytics.org/EPANET/group___nodes.html
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetjuncdata', index, elev, dmnd, dmndpat);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setjuncdata', ph, index, elev, dmnd, dmndpat);
@@ -3411,7 +3482,7 @@ classdef epanet <handle
             %
             % Returns:
             % an error code.
-            if ph.isNull
+            if ~ph
                 [Errcode] = calllib(LibEPANET, 'ENsetflowunits', code);
             else
                 [Errcode] = calllib(LibEPANET, 'EN_setflowunits', ph, code);
@@ -3436,9 +3507,12 @@ classdef epanet <handle
             value=single(0);
             index=int32(index);
             paramcode=int32(paramcode);
-            if ph.isNull
-                [Errcode, value] = calllib(LibEPANET, 'ENgetnodevalue', index, paramcode, value);
-            else
+            try 
+                if ~ph
+                    [Errcode, value] = calllib(LibEPANET, 'ENgetnodevalue', index, paramcode, value);
+            
+                end
+            catch
                 [Errcode, ~, value] = calllib(LibEPANET, 'EN_getnodevalue', ph, index, paramcode, value);
             end
             if Errcode==240, value=NaN; end
@@ -4096,7 +4170,8 @@ classdef epanet <handle
             disp([' (EMT version {', obj.classversion, '}).'])
             
             % Create Project - EPANET 2.2 supported function
-            obj.ph = libpointer('voidPtr');
+            obj.ph = false;
+%             obj.ph = libpointer('voidPtr');
             if contains('ph', varargin) 
                 try
                     obj.createProject;
