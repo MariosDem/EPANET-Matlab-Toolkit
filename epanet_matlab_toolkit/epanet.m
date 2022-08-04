@@ -871,7 +871,7 @@ classdef epanet <handle
             p = libpointer('voidPtr');
             [Errcode, ~, inpname, repname, binname, pviewprog] = calllib(LibEPANET, ...
                 'EN_runproject', ph, inpname, repname, binname, p);
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode] = apiENsetlinkid(index, newid, LibEPANET, ph)
             % Changes the ID name of a link.
@@ -4531,7 +4531,7 @@ classdef epanet <handle
                 obj.Errcode = obj.apiENepanet(obj.BinTempfile, rptfile, binfile, obj.LibEPANET);
                 Errcode = reloadNetwork(obj);
             end
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [value] = plot(obj, varargin)
             % Plots network in a new Matlab figure
@@ -9398,7 +9398,7 @@ classdef epanet <handle
                 dmndpat = varargin{4};
             end
             [index, errcode] = obj.apiENaddnode(juncID, obj.ToolkitConstants.EN_JUNCTION, obj.LibEPANET, obj.ph);
-            error(obj.getError(errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             obj.setNodeCoordinates(index, [xy(1), xy(2)]);
             obj.setNodeJunctionData(index, elev, dmnd, dmndpat);
         end
@@ -9430,7 +9430,7 @@ classdef epanet <handle
                 elev = varargin{2};
             end
             [index, errcode] = obj.apiENaddnode(resID, obj.ToolkitConstants.EN_RESERVOIR, obj.LibEPANET, obj.ph);
-            error(obj.getError(errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             obj.setNodeCoordinates(index, [xy(1), xy(2)]);
             obj.setNodeElevations(index, elev);
         end
@@ -9511,7 +9511,7 @@ classdef epanet <handle
                 volcurve = varargin{8};
             end
             [index, errcode] = obj.apiENaddnode(tankID, obj.ToolkitConstants.EN_TANK, obj.LibEPANET, obj.ph);
-            error(obj.getError(errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             obj.setNodeCoordinates(index, [xy(1), xy(2)]);
             if diam == 0 && strcmp(obj.getNodeType(index), 'TANK')
                 minvol = (pi * (diam/2)^2) *minlvl;
@@ -10248,11 +10248,11 @@ classdef epanet <handle
                 for j = 1:length(idNode)
                     indexNode = obj.getNodeIndex(idNode(j));
                     [Errcode] = obj.apiENdeletenode(indexNode, condition, obj.LibEPANET, obj.ph);
-                    error(obj.getError(Errcode));
+                    error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
                 end
             else
                 [Errcode] = obj.apiENdeletenode(idNode, condition, obj.LibEPANET, obj.ph);
-                error(obj.getError(Errcode));
+                error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             end
         end
         function Errcode = deleteLink(obj, idLink, varargin)
@@ -10290,7 +10290,7 @@ classdef epanet <handle
                 indexLink = idLink;
             end
             [Errcode] = obj.apiENdeletelink(indexLink, condition, obj.LibEPANET, obj.ph);
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             %if obj.Bin, obj.Errcode = reloadNetwork(obj); end
         end
         function Errcode = deletePattern(obj, idPat)
@@ -10314,7 +10314,7 @@ classdef epanet <handle
                 indexPat = idPat;
             end
             [Errcode] = obj.apiENdeletepattern(indexPat, obj.LibEPANET, obj.ph);
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function deletePatternAll(obj)
             % Deletes all time patterns from a project.
@@ -10353,7 +10353,7 @@ classdef epanet <handle
                 indexCurve = idCurve;
             end
             [Errcode] = obj.apiENdeletecurve(indexCurve, obj.LibEPANET, obj.ph);
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function setControls(obj, index, control, varargin)
             % Sets the parameters of a simple control statement.
@@ -10542,7 +10542,7 @@ classdef epanet <handle
             end
             for i=length(index):-1:1
                 [Errcode] = obj.apiENdeletecontrol(index(i), obj.LibEPANET, obj.ph);
-                error(obj.getError(Errcode));
+                error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
             end
         end
         function setLinkPipeData(obj, Index, Length, Diameter, RoughnessCoeff, MinorLossCoeff)
@@ -12890,7 +12890,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsLPS, setFlowUnitsMGD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_GPM, 1, varargin); % gallons per minute
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsLPS(obj, varargin)
             % Sets flow units to LPS(Liters Per Second).
@@ -12901,7 +12901,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsGPM, setFlowUnitsMGD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_LPS, 1, varargin); % liters per second
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsMGD(obj, varargin)
             % Sets flow units to MGD(Million Gallons per Day).
@@ -12912,7 +12912,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsGPM, setFlowUnitsLPS.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_MGD, 1, varargin); % million gallons per day
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsIMGD(obj, varargin)
             % Sets flow units to IMGD(Imperial Million Gallons per Day).
@@ -12923,7 +12923,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsMGD, setFlowUnitsCFS.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_IMGD, 1, varargin); % imperial mgd
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsCFS(obj, varargin)
             % Sets flow units to CFS(Cubic Feet per Second).
@@ -12934,7 +12934,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsAFD, setFlowUnitsIMGD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_CFS, 1, varargin); % cubic feet per second
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsAFD(obj, varargin)
             % Sets flow units to AFD(Acre-Feet per Day).
@@ -12945,7 +12945,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsCFS, setFlowUnitsIMGD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_AFD, 1, varargin); % acre-feet per day
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsLPM(obj, varargin)
             % Sets flow units to LPM(Liters Per Minute).
@@ -12956,7 +12956,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsAFD, setFlowUnitsMLD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_LPM, 1, varargin); % liters per minute
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsMLD(obj, varargin)
             % Sets flow units to MLD(Million Liters per Day).
@@ -12967,7 +12967,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsLPM, setFlowUnitsCMH.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_MLD, 1, varargin); % million liters per day
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsCMH(obj, varargin)
             % Sets flow units to CMH(Cubic Meters per Hour).
@@ -12978,7 +12978,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsMLD, setFlowUnitsCMD.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_CMH, 1, varargin); % cubic meters per hour
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function [Errcode]=setFlowUnitsCMD(obj, varargin)
             % Sets flow units to CMD(Cubic Meters per Day).
@@ -12989,7 +12989,7 @@ classdef epanet <handle
             %
             % See also setFlowUnitsMLD, setFlowUnitsCMH.
             Errcode = obj.setFlowUnits(obj.ToolkitConstants.EN_CMD, 1, varargin); % cubic meters per day
-            error(obj.getError(Errcode));
+            error(obj.apigetError(Errcode, obj.LibEPANET, obj.ph));
         end
         function closeNetwork(obj)
             % Closes down the Toolkit system.
