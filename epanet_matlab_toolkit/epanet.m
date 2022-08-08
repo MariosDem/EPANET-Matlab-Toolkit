@@ -3461,13 +3461,13 @@ classdef epanet <handle
             str_leg = {'', inp_file, msx_file, out_file};
             str_leg_point = libpointer('stringPtrPtr', str_leg);
             obj.MSX = libpointer('voidPtr');
-            Errcode = calllib('legacymsx', 'Legacyopen', obj.MSX, str_leg_point);
-            setdatatype(obj.MSX, 'ProjectPtr');
             if ~obj.ph.isNull
                 [Errcode] = calllib(obj.LibEPANET, 'ENopen', obj.TempInpFile, '', '');
                 error(obj.apiENgeterror(obj.Errcode, obj.LibEPANET, obj.ph));
+            else
+                Errcode = calllib('legacymsx', 'Legacyopen', obj.MSX, str_leg_point);
+                setdatatype(obj.MSX, 'ProjectPtr');
             end
-            [Errcode] = calllib(obj.MSXLibEPANET, 'MSXopen', obj.MSXTempFile);
             % [Errcode] = calllib(obj.MSXLibEPANET, 'MSXopen', obj.MSXTempFile);
             if Errcode
                 obj.apiMSXerror(Errcode, obj.MSXLibEPANET);
@@ -4434,11 +4434,18 @@ classdef epanet <handle
                     end
                 end
             end
-            obj.MSXLibEPANET='epanetmsx'; % Get DLL LibEPANET (e.g. epanet20012x86 for 32-bit)
+            obj.MSXLibEPANET='epanetmsx'; 
             if ~libisloaded(obj.MSXLibEPANET)
                 loadlibrary([obj.MSXLibEPANETPath, obj.MSXLibEPANET], [obj.MSXLibEPANETPath, [obj.MSXLibEPANET, '.h']]);
             end
-
+            % epanetMSX library
+            if ~libisloaded('epanetMSX')
+                loadlibrary([obj.MSXLibEPANETPath, obj.MSXLibEPANET], [obj.MSXLibEPANETPath, 'msxtoolkit.h'], 'alias','epanetMSX');
+            end
+            % Legacy library
+            if ~libisloaded('legacymsx')
+                loadlibrary([obj.MSXLibEPANETPath, 'legacymsx'], [obj.MSXLibEPANETPath, ['legacyToolkit', '.h']]);
+            end
             obj.MSXFile = which(char(msxname));
             %Save the temporary msx file
             mm=0;
@@ -13663,7 +13670,7 @@ classdef epanet <handle
             value = cell(1, msxSpCnt);
             if msxSpCnt
                 for i=1:msxSpCnt
-                    [obj.Errcode, ~, value{i}, ~, ~] = obj.apiMSXgetspecies(i, obj.MSXLibEPANET);
+                    [obj.Errcode, ~, value{i}, ~, ~] = obj.apiMSXgetspecies(i, obj.MSXLibEPANET, obj.MSX);
                     if obj.Errcode, error(obj.getMSXError(obj.Errcode)); end
                 end
             end
