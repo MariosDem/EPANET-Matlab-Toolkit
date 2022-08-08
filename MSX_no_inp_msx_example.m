@@ -121,6 +121,7 @@ while (tleft>0 && Errcode == 0)
     count = count+1;
 end
 
+Errcode = calllib('legacymsx', 'MSXsavemsxfile', MSX, 'ex.msx');
 Errcode = calllib('legacymsx', 'MSXsaveFinalResults', MSX);
 Errcode = calllib('legacymsx', 'MSXreport', MSX, 'example_report');
 
